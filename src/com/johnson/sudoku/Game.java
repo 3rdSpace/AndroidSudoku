@@ -1,5 +1,7 @@
 package com.johnson.sudoku;
 
+import java.util.Arrays;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -14,6 +16,9 @@ public class Game extends Activity {
 	public static final int DIFFICULTY_EASY = 0;
 	public static final int DIFFICULTY_MEDIUM = 1;
 	public static final int DIFFICULTY_HARD = 2;
+	
+	private int currentDifficulty = DIFFICULTY_EASY;
+	private int[][] originPuzzle = new int[9][];
 	
 	private int puzzle[][] = new int[9][9];
 	private final int used[][][] = new int[9][9][];
@@ -40,6 +45,10 @@ public class Game extends Activity {
 		
 		int difficulty = super.getIntent().getIntExtra(KEY_DIFFICULTY, DIFFICULTY_EASY);
 		puzzle = getPuzzle(difficulty);
+		// record
+		this.currentDifficulty = difficulty;
+		this.originPuzzle = getPuzzle(difficulty);
+		// calculate
 		calculateUsedTiles();
 		
 		puzzleView = new PuzzleView(this);
@@ -167,6 +176,10 @@ public class Game extends Activity {
 			break;
 		}
 		return fromPuzzleString(puz);
+	}
+	
+	protected boolean isImmutableTile(int x, int y) {
+		return originPuzzle[x][y] != 0;
 	}
 	
 	private static String toPuzzleString(int[][] puz) {

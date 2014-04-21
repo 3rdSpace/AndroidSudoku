@@ -80,7 +80,6 @@ public class PuzzleView extends View {
 		}
 		// draw numbers
 		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
-		foreground.setColor(getResources().getColor(R.color.puzzle_foreground));
 		foreground.setStyle(Style.FILL);
 		foreground.setTextSize(height * 0.75f);
 		foreground.setTextAlign(Paint.Align.CENTER);
@@ -89,10 +88,16 @@ public class PuzzleView extends View {
 		float y = height / 2 - fm.ascent / 2;
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
-				if (game.getTileString(i, j).length() > 0) {
-					canvas.drawText(this.game.getTileString(i, j), 
-							startX + i * width + x, startY + j * height + y, foreground);
+				if (game.getTileString(i, j).length() == 0) {
+					continue;
 				}
+				if (game.isImmutableTile(i, j)) {
+					foreground.setColor(getResources().getColor(R.color.puzzle_fixed_tile));
+				} else {
+					foreground.setColor(getResources().getColor(R.color.puzzle_foreground));
+				}
+				canvas.drawText(this.game.getTileString(i, j), 
+							startX + i * width + x, startY + j * height + y, foreground);
 			}
 		}
 		
@@ -176,7 +181,12 @@ public class PuzzleView extends View {
 		if (x < 0 || x > 9*width || y < 0 || y > 9*height) {
 			return super.onTouchEvent(event);
 		}
-		select((int) (x / width), (int) (y / height));
+		int mappedX = (int) (x / width);
+		int mappedY = (int) (y / height);
+		if (game.isImmutableTile(mappedX, mappedY)) {
+			return super.onTouchEvent(event);
+		}
+		select(mappedX, mappedY);
 		game.showKeypadOrError(selX, selY);
 		Log.d(TAG, "onTouchEvent: x " + selX + ", y " + selY);
 		return true;
