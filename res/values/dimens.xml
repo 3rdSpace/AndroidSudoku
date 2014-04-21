@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="main_padding">30dip</dimen>
+    
+    <dimen name="main_title_size">24.5sp</dimen>
+    <dimen name="main_title_margin_bottom">25dip</dimen>
+    
+    <!-- about layout -->
+    <dimen name="about_padding">10dip</dimen>
+    
+</resources>
