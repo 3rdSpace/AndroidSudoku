@@ -27,7 +27,11 @@
             android:theme="@android:style/Theme.Dialog"/>
         <activity
             android:name=".Prefs"
-            android:label="@string/settings_title" />"
+            android:label="@string/settings_title" />
+        
+        <activity
+            android:name=".Game"
+            android:label="@string/game_title" />
     </application>
 
 </manifest>

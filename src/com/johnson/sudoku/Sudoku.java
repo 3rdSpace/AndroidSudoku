@@ -48,19 +48,22 @@ public class Sudoku extends Activity {
 	 * OnclickListener
 	 */
 	private final OnClickListener btnClickListener = new OnClickListener() {
+		
+		private Activity activity = Sudoku.this;
 
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.new_game_btn:
-				openNewGameDialog();
+				this.openNewGameDialog();
 				break;
 			case R.id.about_btn:
 				Intent i = new Intent(Sudoku.this, About.class);
-				Sudoku.this.startActivity(i);
+				activity.startActivity(i);
 				break;
 			case R.id.exit_btn:
-				System.exit(0);
+				activity.finish();
+				break;
 			}
 		}
 		
@@ -68,12 +71,12 @@ public class Sudoku extends Activity {
 		 * Open a difficulty selecting dialog for new game
 		 */
 		private void openNewGameDialog() {
-			new AlertDialog.Builder(Sudoku.this)
+			new AlertDialog.Builder(activity)
 					.setTitle(R.string.new_game_title)
 					.setItems(R.array.difficulty, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							startNewGame(which);
+							startGame(which);
 						}
 					})
 					.show();
@@ -84,9 +87,11 @@ public class Sudoku extends Activity {
 		 * @param option
 		 * 		selected difficulty option
 		 */
-		private void startNewGame(int option) {
+		private void startGame(int option) {
 			Log.d(Sudoku.class.getName(), "clicked on " + option);
-			// TODO: start game
+			Intent in = new Intent(Sudoku.this, Game.class);
+			in.putExtra(Game.KEY_DIFFICULTY, option);
+			activity.startActivity(in);
 		}
 	};
 	
