@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class Game extends Activity {
@@ -43,11 +44,16 @@ public class Game extends Activity {
 		super.onCreate(savedInstanceState);
 		Log.d(Game.class.getName(), "onCreate");
 		
+		// keep screen high light
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 
+				WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 		int difficulty = super.getIntent().getIntExtra(KEY_DIFFICULTY, DIFFICULTY_EASY);
 		puzzle = getPuzzle(difficulty);
 		// record
 		this.currentDifficulty = difficulty;
 		this.originPuzzle = getPuzzle(difficulty);
+		
 		// calculate
 		calculateUsedTiles();
 		

@@ -54,6 +54,8 @@ public class Sudoku extends Activity {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
+			case R.id.continue_btn:
+				continueGame();
 			case R.id.new_game_btn:
 				this.openNewGameDialog();
 				break;
@@ -92,6 +94,11 @@ public class Sudoku extends Activity {
 			Intent in = new Intent(Sudoku.this, Game.class);
 			in.putExtra(Game.KEY_DIFFICULTY, option);
 			activity.startActivity(in);
+		}
+		
+		private void continueGame() {
+			// TODO: to complete
+			openNewGameDialog();
 		}
 	};
 	
