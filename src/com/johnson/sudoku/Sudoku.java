@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,6 +16,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class Sudoku extends Activity {
+	
+	private MediaPlayer mp;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,17 @@ public class Sudoku extends Activity {
 		super.findViewById(R.id.new_game_btn).setOnClickListener(btnClickListener);
 		super.findViewById(R.id.about_btn).setOnClickListener(btnClickListener);
 		super.findViewById(R.id.exit_btn).setOnClickListener(btnClickListener);
+		
+		// play background music
+		super.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		mp = MediaPlayer.create(this,  R.raw.bg);
+		mp.setOnCompletionListener(new OnCompletionListener() {
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				mp.start();
+			}
+		});
+		mp.start();
 	}
 
 	@Override

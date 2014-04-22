@@ -140,7 +140,7 @@ public class Game extends Activity {
 		int startx = (x / 3) * 3;
 		int starty = (y / 3) * 3;
 		for (int i=startx; i<startx+3; i++) {
-			for (int j=starty; y<starty+3; y++) {
+			for (int j=starty; j<starty+3; j++) {
 				if (i == x && j == y) {
 					continue;
 				}
