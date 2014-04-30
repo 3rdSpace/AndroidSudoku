@@ -17,12 +17,8 @@ public class PuzzleView extends View {
 	private static final String TAG = PuzzleView.class.getName();
 	
 	private final Game game;
+	private final Puzzle puzzle;
 
-	public PuzzleView(Context context) {
-		super(context);
-		this.game = (Game) context;
-		super.setFocusableInTouchMode(true);
-	}
 	
 	private float width;	// width of one tile
 	private float height;	// height of one tile
@@ -31,6 +27,13 @@ public class PuzzleView extends View {
 	private int selX;		// X index of selection
 	private int selY;		// Y index of selection
 	private final Rect selRect = new Rect();
+	
+	public PuzzleView(Context context) {
+		super(context);
+		this.game = (Game) context;
+		this.puzzle = game.puzzle;
+		super.setFocusableInTouchMode(true);
+	}
 	
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -78,6 +81,31 @@ public class PuzzleView extends View {
 				canvas.drawLine(startX + i * width + 2, startY, startX + i * width + 2, startY + 9 * height, hilite);
 			}
 		}
+		
+		// pick a hint color based on #moves left
+		if (Prefs.isHintsOn(getContext())) {
+			Paint hint = new Paint();
+			int[] c = {getResources().getColor(R.color.puzzle_hint_0),
+					getResources().getColor(R.color.puzzle_hint_1),
+					getResources().getColor(R.color.puzzle_hint_2)};
+			Rect r = new Rect();
+			for (int i=0; i<9; i++) {
+				for (int j=0; j<9; j++) {
+					int movesLeft = 9 - game.getUsedTiles(i, j).length;
+					if (movesLeft < c.length) {
+						getRect(i, j, r);
+						hint.setColor(c[movesLeft]);
+						canvas.drawRect(r, hint);
+					}
+				}
+			}
+		}
+		
+		// draw the selection
+		Paint selected = new Paint();
+		selected.setColor(getResources().getColor(R.color.puzzle_selected));
+		canvas.drawRect(selRect, selected);
+		
 		// draw numbers
 		Paint foreground = new Paint(Paint.ANTI_ALIAS_FLAG);
 		foreground.setStyle(Style.FILL);
@@ -91,35 +119,13 @@ public class PuzzleView extends View {
 				if (game.getTileString(i, j).length() == 0) {
 					continue;
 				}
-				if (game.isImmutableTile(i, j)) {
+				if (puzzle.isImmutableTile(i, j)) {
 					foreground.setColor(getResources().getColor(R.color.puzzle_fixed_tile));
 				} else {
 					foreground.setColor(getResources().getColor(R.color.puzzle_foreground));
 				}
 				canvas.drawText(this.game.getTileString(i, j), 
 							startX + i * width + x, startY + j * height + y, foreground);
-			}
-		}
-		
-		// draw the selection
-		Paint selected = new Paint();
-		selected.setColor(getResources().getColor(R.color.puzzle_selected));
-		canvas.drawRect(selRect, selected);
-		
-		// pick a hint color based on #moves left
-		Paint hint = new Paint();
-		int[] c = {getResources().getColor(R.color.puzzle_hint_0),
-				getResources().getColor(R.color.puzzle_hint_1),
-				getResources().getColor(R.color.puzzle_hint_2)};
-		Rect r = new Rect();
-		for (int i=0; i<9; i++) {
-			for (int j=0; j<9; j++) {
-				int movesLeft = 9 - game.getUsedTiles(i, j).length;
-				if (movesLeft < c.length) {
-					getRect(i, j, r);
-					hint.setColor(c[movesLeft]);
-					canvas.drawRect(r, hint);
-				}
 			}
 		}
 	}
@@ -183,7 +189,7 @@ public class PuzzleView extends View {
 		}
 		int mappedX = (int) (x / width);
 		int mappedY = (int) (y / height);
-		if (game.isImmutableTile(mappedX, mappedY)) {
+		if (puzzle.isImmutableTile(mappedX, mappedY)) {
 			return super.onTouchEvent(event);
 		}
 		select(mappedX, mappedY);
@@ -201,12 +207,11 @@ public class PuzzleView extends View {
 	}
 	
 	protected void setSelectedTile(int tile) {
-		if (game.setTileIfValid(selX, selY, tile)) {
+		if (puzzle.setTileIfValid(selX, selY, tile)) {
 			invalidate();
 		} else {
 			Log.d(TAG, "setSelectedTile: invalid: " + tile);
 			startAnimation(AnimationUtils.loadAnimation(game,  R.anim.shake));
 		}
 	}
-
 }

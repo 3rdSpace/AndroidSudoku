@@ -31,8 +31,9 @@
         exactly once.
     </string>
     
-    <!-- difficulty for new game -->
+    <!-- difficulty for game -->
     <string name="new_game_title">Difficulty</string>
+    <string name="continue_game_title">Difficulty</string>
     <string name="easy_label">Easy</string>
     <string name="medium_label">Medium</string>
     <string name="hard_label">Hard</string>

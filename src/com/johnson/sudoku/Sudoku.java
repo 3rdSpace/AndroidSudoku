@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +14,7 @@ import android.view.View.OnClickListener;
 
 public class Sudoku extends Activity {
 	
-	private MediaPlayer mp;
+	private static final String TAG = Sudoku.class.getName();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,17 +26,6 @@ public class Sudoku extends Activity {
 		super.findViewById(R.id.new_game_btn).setOnClickListener(btnClickListener);
 		super.findViewById(R.id.about_btn).setOnClickListener(btnClickListener);
 		super.findViewById(R.id.exit_btn).setOnClickListener(btnClickListener);
-		
-		// play background music
-		super.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		mp = MediaPlayer.create(this,  R.raw.bg);
-		mp.setOnCompletionListener(new OnCompletionListener() {
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				mp.start();
-			}
-		});
-		mp.start();
 	}
 
 	@Override
@@ -60,6 +46,19 @@ public class Sudoku extends Activity {
 		return false;
 	}
 	
+	@Override
+	public void onResume() {
+		super.onResume();
+		Music.play(this, R.raw.main);
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		Music.stop(this);
+	}
+	
+	
 	/**
 	 * OnclickListener
 	 */
@@ -71,7 +70,8 @@ public class Sudoku extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.continue_btn:
-				continueGame();
+				this.openContinueGameDialog();
+				break;
 			case R.id.new_game_btn:
 				this.openNewGameDialog();
 				break;
@@ -100,21 +100,41 @@ public class Sudoku extends Activity {
 					.show();
 		}
 		
+		private void openContinueGameDialog() {
+			new AlertDialog.Builder(activity)
+					.setTitle(R.string.continue_game_title)
+					.setItems(R.array.difficulty, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							continueGame(which);
+						}
+					})
+					.show();
+		}
+		
 		/**
 		 * Start new game
 		 * @param option
 		 * 		selected difficulty option
 		 */
 		private void startGame(int option) {
-			Log.d(Sudoku.class.getName(), "clicked on " + option);
-			Intent in = new Intent(Sudoku.this, Game.class);
+			Log.d(TAG, " new game: clicked on " + option);
+			Intent in = new Intent(activity, Game.class);
 			in.putExtra(Game.KEY_DIFFICULTY, option);
 			activity.startActivity(in);
 		}
 		
-		private void continueGame() {
-			// TODO: to complete
-			openNewGameDialog();
+		/**
+		 * Continue old game
+		 * @param option
+		 * 		selected difficulty option
+		 */
+		private void continueGame(int option) {
+			Log.d(TAG, " continue: clicked on " + option);
+			Intent in = new Intent(activity, Game.class);
+			in.putExtra(Game.KEY_DIFFICULTY, option);
+			in.putExtra(Game.KEY_CONTINUE, true);
+			activity.startActivity(in);
 		}
 	};
 	

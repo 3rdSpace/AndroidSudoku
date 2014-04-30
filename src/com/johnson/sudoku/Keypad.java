@@ -34,8 +34,8 @@ public class Keypad extends Dialog {
 			if (element != 0) {
 				keys[element - 1].setVisibility(View.INVISIBLE);
 			}
-			setListeners();
 		}
+		setListeners();
 	}
 	
 	private void findViews() {
@@ -83,25 +83,6 @@ public class Keypad extends Dialog {
 			returnResult(tile);
 		}
 		return true;
-		
-//		switch (keyCode) {
-//		case KeyEvent.KEYCODE_0:
-//		case KeyEvent.KEYCODE_SPACE:
-//			tile = 0; break;
-//		case KeyEvent.KEYCODE_1:
-//			tile = 1; break;
-//		case KeyEvent.KEYCODE_2:
-//			tile = 2; break;
-//		case KeyEvent.KEYCODE_3:
-//			tile = 3; break;
-//		case KeyEvent.KEYCODE_4:
-//			tile = 4; break;
-//		case KeyEvent.KEYCODE_5:
-//			tile = 5; break;
-//		case KeyEvent.KEYCODE_6:
-//			tile = 6; break;
-//		}
-//		return false;
 	}
 	
 	private boolean isValid(int tile) {
@@ -117,6 +98,4 @@ public class Keypad extends Dialog {
 		puzzleView.setSelectedTile(tile);
 		dismiss();
 	}
-	
-
 }
